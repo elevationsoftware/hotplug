@@ -12,7 +12,7 @@ import asyncio
 import hotplug
 
 
-async def whats_new'(added, removed):
+async def whats_new(added, removed):
     print(f'added:{added}, removed:{removed}')
 
 
