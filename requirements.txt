@@ -1,0 +1,5 @@
+pyusb
+pyee
+
+if 'win' in sys.platform:
+    pywin32
