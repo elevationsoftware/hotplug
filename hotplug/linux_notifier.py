@@ -19,4 +19,4 @@ class LinuxNotifier(HotPlug):
             latest = set([d.devid for d in backend.enumerate_devices()])
             if latest != devices:
                 devices = latest
-                await self._handle_change()
+                self._handle_change()

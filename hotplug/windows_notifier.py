@@ -36,6 +36,6 @@ class WindowsNotifier(HotPlug):
         if self.debouncing:
             return
         self.debouncing = True
-        await self._handle_change()
+        self._handle_change()
         await asyncio.sleep(.5)
         self.debouncing = False
