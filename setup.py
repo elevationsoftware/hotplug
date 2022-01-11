@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-requires = ['pyusb', 'pyee']
+requires = ['libusb1', 'pyee']
 if os.name == 'nt':
     requires.append('pywin32')
 

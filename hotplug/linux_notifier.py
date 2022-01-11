@@ -1,6 +1,8 @@
-import usb
+from ctypes import byref
+
+import usb1
 import asyncio
-from hotplug.hotplug import HotPlug
+from hotplug.hotplug import HotPlug, list_devices
 import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -12,11 +14,10 @@ class LinuxNotifier(HotPlug):
 
     async def start(self):
         logger.debug(f'Listening to messages')
-        backend = usb.backend.libusb1.get_backend()
-        devices = set([d.devid for d in backend.enumerate_devices()])
+        devices = set(list_devices())
         while True:
             await asyncio.sleep(.5)  # allow the loop to run
-            latest = set([d.devid for d in backend.enumerate_devices()])
+            latest = set(list_devices())
             if latest != devices:
                 devices = latest
                 self._handle_change()

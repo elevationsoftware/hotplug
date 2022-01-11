@@ -1,6 +1,11 @@
-import asyncio
+import usb1
 from pyee import AsyncIOEventEmitter
-import usb.core
+
+
+def list_devices():
+    with usb1.USBContext() as context:
+        for d in context.getDeviceIterator(skip_on_error=True):
+            yield d.getVendorID(), d.getProductID(), d.getBusNumber(), d.getDeviceAddress()
 
 
 class HotPlug(AsyncIOEventEmitter):
@@ -10,8 +15,7 @@ class HotPlug(AsyncIOEventEmitter):
         self.__update()
 
     def __update(self):
-        devices = usb.core.find(find_all=True)
-        latest = set((d.idVendor, d.idProduct, d.bus, d.address) for d in devices)
+        latest = set(list_devices())
         added = [x for x in latest if x not in self.devices]
         removed = [x for x in self.devices if x not in latest]
         self.devices = latest
