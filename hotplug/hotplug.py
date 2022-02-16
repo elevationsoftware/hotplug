@@ -5,7 +5,12 @@ from pyee import AsyncIOEventEmitter
 def list_devices():
     with usb1.USBContext() as context:
         for d in context.getDeviceIterator(skip_on_error=True):
-            yield d.getVendorID(), d.getProductID(), d.getBusNumber(), d.getDeviceAddress()
+            try:
+                serial_num = d.getSerialNumber()
+            except Exception:
+                serial_num = None
+                pass
+            yield d.getVendorID(), d.getProductID(), d.getBusNumber(), d.getDeviceAddress(), serial_num
 
 
 class HotPlug(AsyncIOEventEmitter):
@@ -24,19 +29,25 @@ class HotPlug(AsyncIOEventEmitter):
     def _handle_change(self):
         added, removed = self.__update()
         for d in added:
-            vid, pid, bus, address = d
+            vid, pid, bus, address, serial_num = d
             self.emit('change', 'added', d)
             self.emit('added', d)
             self.emit(f"{vid:04x}:{pid:04x}", 'added', d)
         for d in removed:
-            vid, pid, bus, address = d
+            vid, pid, bus, address, serial_num = d
             self.emit('change', 'removed', d)
             self.emit('removed', d)
             self.emit(f"{vid:04x}:{pid:04x}", 'removed', d)
 
-    def contains(self, vid, pid):
+    def contains(self, vid, pid, serial_num=None):
         for d in self.devices:
-            v, p, b, a = d
+            v, p, b, a, s = d
             if v == vid and p == pid:
-                return True
+                if serial_num:
+                    if s == serial_num:
+                        return True
+                    else:
+                        continue
+                else:
+                    return True
         return False
