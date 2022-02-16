@@ -13,6 +13,12 @@ def list_devices():
             yield d.getVendorID(), d.getProductID(), d.getBusNumber(), d.getDeviceAddress(), serial_num
 
 
+def _find(lst, vid, pid, buss, address, _):
+    for d in lst:
+        if d[0] == vid and d[1] == pid and d[2] == buss and d[3] == address:
+            return d
+
+
 class HotPlug(AsyncIOEventEmitter):
     def __init__(self):
         super().__init__()
@@ -20,7 +26,17 @@ class HotPlug(AsyncIOEventEmitter):
         self.__update()
 
     def __update(self):
-        latest = set(list_devices())
+        latest = set()
+
+        # On Windows: once a USB device has been claimed,
+        # we can't access getSerialNumber(). So, we need
+        # to keep the old version if it had a serial.
+        for d_new in list_devices():
+            d_old = _find(self.devices, *d_new)
+            if d_old is not None:
+                d_new = d_old if d_old[4] is not None else d_new
+            latest.add(d_new)
+
         added = [x for x in latest if x not in self.devices]
         removed = [x for x in self.devices if x not in latest]
         self.devices = latest
