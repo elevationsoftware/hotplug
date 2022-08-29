@@ -1,6 +1,5 @@
 import usb1
-from pyee import AsyncIOEventEmitter
-
+from AsyncEventEmitter import AsyncEventEmitter
 
 def list_devices():
     with usb1.USBContext() as context:
@@ -19,7 +18,7 @@ def _find(lst, vid, pid, buss, address, _):
             return d
 
 
-class HotPlug(AsyncIOEventEmitter):
+class HotPlug(AsyncEventEmitter):
     def __init__(self):
         super().__init__()
         self.devices = set()

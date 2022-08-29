@@ -1,13 +1,13 @@
 import os
 from setuptools import setup, find_packages
 
-requires = ['libusb1', 'pyee']
+requires = ['libusb1']
 if os.name == 'nt':
     requires.append('pywin32')
 
 setup(
     name="Hotplug",
-    version="1.0.0",
+    version="2.0.0",
     description="pyusb + hotplugging + async events",
     author_email="support@elevated.app",
     url="https://github.com/elevationsoftware/hotplug",
