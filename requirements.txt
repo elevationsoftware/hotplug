@@ -1,4 +1,2 @@
-libusb1
-pywin32; sys_platform == 'win32'
-
 -e ../async-event-emitter
+-e .
