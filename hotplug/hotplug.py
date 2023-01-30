@@ -45,14 +45,14 @@ class HotPlug(AsyncEventEmitter):
         added, removed = self.__update()
         for d in added:
             vid, pid, bus, address, serial_num = d
-            self.emit('change', 'added', d)
-            self.emit('added', d)
-            self.emit(f"{vid:04x}:{pid:04x}", 'added', d)
+            self.emit_and_forget('change', 'added', d)
+            self.emit_and_forget('added', d)
+            self.emit_and_forget(f"{vid:04x}:{pid:04x}", 'added', d)
         for d in removed:
             vid, pid, bus, address, serial_num = d
-            self.emit('change', 'removed', d)
-            self.emit('removed', d)
-            self.emit(f"{vid:04x}:{pid:04x}", 'removed', d)
+            self.emit_and_forget('change', 'removed', d)
+            self.emit_and_forget('removed', d)
+            self.emit_and_forget(f"{vid:04x}:{pid:04x}", 'removed', d)
 
     def contains(self, vid, pid, serial_num=None):
         for d in self.devices:
