@@ -1,2 +1,1 @@
--e ../async-event-emitter
--e .
+async-event-emitter@ git+https://github.com/elevationsoftware/async-event-emitter@v1.0.0
